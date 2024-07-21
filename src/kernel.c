@@ -70,3 +70,35 @@ void uart_init()
 
     mmio_write(UART0_CR, (1 << 0) | (1 << 8) | (1 << 9));
 }
+
+void uart_putc(unsigned char c){
+
+    while (mmio_read(UART0_FR) & (1 << 5)){}
+    mmio_write(UART0_DR, c);
+}
+
+unsigned char uart_getc()
+{
+    while (mmio_read(UART0_FR) & (1 << 4)){}
+    return mmio_read(UART0_DR);
+}
+
+void uart_puts(const char* str){
+    for(size_t i=0; str[i] != '\0'; i++)
+        uart_putc((unsigned char)str[i]);
+}
+
+void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
+{
+    (void) r0;
+    (void) r1;
+    (void) atags;
+
+    uart_init();
+    uart_puts("Hello World!!!!!!!!!!!\r\n 'lando we can be world champions i said\r\n'")
+
+    while (1) {
+        uart_putc(uart_getc());
+        uart_putc('\n')
+    }
+}
