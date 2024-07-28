@@ -1,5 +1,6 @@
 .section ".text.boot"
-.global_start
+
+.global _start
 
 _start:
     mrc p15, #0, r1, c0, c0, #5
@@ -24,8 +25,9 @@ _start:
     cmp r4, r9
     blo 1b
 
-    ldr r3, -kernel_main
+    ldr r3, =kernel_main
     blx r3
+
 halt:
     wfe
     b halt
